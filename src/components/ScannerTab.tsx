@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc, collection, query, where, getDocs, limit, orderBy } from 'firebase/firestore';
 import { 
@@ -916,89 +917,122 @@ export default function ScannerTab({ currentUser }: ScannerTabProps) {
       </div>
 
       {/* Pop-up Data Siswa untuk Verifikasi oleh Petugas */}
-      {candidateStudent && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-250">
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-2xl max-w-md w-full overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
-            {/* Header */}
-            <div className="p-5 border-b border-slate-100 bg-indigo-50/50 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="h-10 w-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
-                  <UserCheck className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-800 text-base">Konfirmasi Kehadiran</h3>
-                  <p className="text-xs text-indigo-700 font-semibold">Pemindaian QR Berhasil</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setCandidateStudent(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Content */}
-            <div className="p-6 space-y-5 text-center">
-              {/* Photo Area / Foto Siswa */}
-              <div className="flex justify-center">
-                <div className="relative">
-                  <div className={`h-28 w-28 rounded-full border-4 border-white shadow-md flex items-center justify-center overflow-hidden ${
-                    candidateStudent.gender === 'Perempuan' ? 'bg-pink-100 text-pink-600' : 'bg-indigo-100 text-indigo-600'
-                  }`}>
-                    <User className="h-16 w-16" />
+      <AnimatePresence>
+        {candidateStudent && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+              className="bg-white rounded-2xl border border-slate-100 shadow-2xl max-w-md w-full overflow-hidden flex flex-col"
+            >
+              {/* Header */}
+              <div className="p-5 border-b border-slate-100 bg-indigo-50/50 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-10 w-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
+                    <UserCheck className="h-5 w-5" />
                   </div>
-                  <div className="absolute -bottom-1 -right-1 h-8 w-8 bg-emerald-550 border-2 border-white rounded-full flex items-center justify-center text-white" title="Status Aktif">
-                    <CheckCircle className="h-4 w-4" />
+                  <div>
+                    <h3 className="font-bold text-slate-800 text-base">Konfirmasi Kehadiran</h3>
+                    <p className="text-xs text-indigo-700 font-semibold">Pemindaian QR Berhasil</p>
                   </div>
                 </div>
+                <button
+                  onClick={() => setCandidateStudent(null)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
 
-              {/* Student Details / Data Siswa */}
-              <div className="space-y-2">
-                <h4 className="text-lg font-bold text-slate-800 leading-tight">
-                  {candidateStudent.name}
-                </h4>
-                <div className="flex flex-col gap-1 items-center justify-center">
-                  <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-bold text-xs">
-                    Kelas {candidateStudent.class}
-                  </span>
-                  <span className="px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 font-mono font-bold text-xs mt-1">
-                    NIS: {candidateStudent.id}
-                  </span>
+              {/* Content */}
+              <div className="p-6 space-y-5 text-center">
+                {/* Photo Area / Foto Siswa */}
+                <div className="flex justify-center">
+                  <div className="relative">
+                    <div className={`h-28 w-28 rounded-full border-4 border-white shadow-md flex items-center justify-center overflow-hidden ${
+                      candidateStudent.gender === 'Perempuan' ? 'bg-pink-100 text-pink-600' : 'bg-indigo-100 text-indigo-600'
+                    }`}>
+                      <User className="h-16 w-16" />
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 h-8 w-8 bg-emerald-550 border-2 border-white rounded-full flex items-center justify-center text-white" title="Status Aktif">
+                      <CheckCircle className="h-4 w-4" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Student Details / Data Siswa */}
+                <div className="space-y-2">
+                  <h4 className="text-lg font-bold text-slate-800 leading-tight">
+                    {candidateStudent.name}
+                  </h4>
+                  <div className="flex flex-col gap-1 items-center justify-center">
+                    <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-bold text-xs">
+                      Kelas {candidateStudent.class}
+                    </span>
+                    <span className="px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 font-mono font-bold text-xs mt-1">
+                      NIS: {candidateStudent.id}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Target Sholat Status indicator */}
+                <div className="bg-slate-50 border border-slate-150 rounded-xl p-3 text-xs text-slate-600 flex justify-between items-center">
+                  <span className="font-semibold text-slate-500">Target Verifikasi:</span>
+                  <div className="flex gap-1 p-0.5 bg-slate-200/60 rounded-lg">
+                    <button
+                      onClick={() => setActiveSholat('dhuhur')}
+                      className={`px-3 py-1.5 rounded-md font-extrabold text-[10px] uppercase transition-all cursor-pointer ${
+                        activeSholat === 'dhuhur'
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-800 hover:bg-slate-300/30'
+                      }`}
+                    >
+                      Dhuhur
+                    </button>
+                    <button
+                      onClick={() => setActiveSholat('ashar')}
+                      className={`px-3 py-1.5 rounded-md font-extrabold text-[10px] uppercase transition-all cursor-pointer ${
+                        activeSholat === 'ashar'
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-800 hover:bg-slate-300/30'
+                      }`}
+                    >
+                      Ashar
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Target Sholat Status indicator */}
-              <div className="bg-slate-50 border border-slate-150 rounded-xl p-3 text-xs text-slate-600 flex justify-between items-center">
-                <span className="font-semibold text-slate-500">Target Verifikasi:</span>
-                <span className="font-bold text-indigo-700 uppercase bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
-                  SHOLAT {activeSholat}
-                </span>
+              {/* Footer Buttons */}
+              <div className="p-4 border-t border-slate-100 bg-slate-50 flex gap-3">
+                <button
+                  onClick={() => setCandidateStudent(null)}
+                  className="flex-1 py-3 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold cursor-pointer transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={async () => {
+                    await submitVerification(candidateStudent);
+                    setCandidateStudent(null);
+                  }}
+                  className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-colors"
+                >
+                  Hadir
+                </button>
               </div>
-            </div>
-
-            {/* Footer Buttons */}
-            <div className="p-4 border-t border-slate-100 bg-slate-50 flex gap-3">
-              <button
-                onClick={() => setCandidateStudent(null)}
-                className="flex-1 py-3 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold cursor-pointer transition-colors"
-              >
-                Batal
-              </button>
-              <button
-                onClick={async () => {
-                  await submitVerification(candidateStudent);
-                  setCandidateStudent(null);
-                }}
-                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-colors"
-              >
-                Hadir
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
