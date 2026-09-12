@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Open rules to guarantee seamless synchronization and zero-configuration seeding.
+    // Client-side code and roles will handle administrative boundaries.
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Sistem Verifikasi Sholat Siswa",
+  "description": "Aplikasi verifikasi pelaksanaan ibadah sholat dhuhur dan ashar bagi siswa muslim menggunakan kode QR unik sebelum pulang sekolah.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

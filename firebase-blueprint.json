@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System users including admins, teachers, and religious officers",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "username": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "guru", "petugas"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "username", "name", "role"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Student record with metadata and QR preferences",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\\\-]+$" },
+        "name": { "type": "string" },
+        "class": { "type": "string" },
+        "religion": { "type": "string", "enum": ["Muslim", "Non-Muslim"] },
+        "qrType": { "type": "string", "enum": ["lifetime", "harian"] },
+        "qrToken": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "class", "religion", "qrType", "qrToken"]
+    },
+    "Verification": {
+      "title": "Verification",
+      "description": "Daily sholat verification log for a student",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\\\-]+$" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "studentClass": { "type": "string" },
+        "date": { "type": "string", "description": "Format YYYY-MM-DD in Asia/Jakarta timezone" },
+        "sholatType": { "type": "string", "enum": ["dhuhur", "ashar"] },
+        "verifiedAt": { "type": "string", "format": "date-time" },
+        "verifiedBy": { "type": "string" },
+        "verifiedByName": { "type": "string" }
+      },
+      "required": ["id", "studentId", "studentName", "studentClass", "date", "sholatType", "verifiedAt", "verifiedBy"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Access system user roles and profiles"
+    },
+    "/students/{studentId}": {
+      "schema": "Student",
+      "description": "Manage student records"
+    },
+    "/verifications/{verificationId}": {
+      "schema": "Verification",
+      "description": "Store daily prayer verification logs"
+    }
+  }
+}
